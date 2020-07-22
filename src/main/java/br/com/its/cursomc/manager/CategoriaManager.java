@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import br.com.its.cursomc.dao.CategoriaDao;
 import br.com.its.cursomc.domain.Categoria;
+import br.com.its.cursomc.manager.exception.ObjectNotFoundException;
 
 @Service
 public class CategoriaManager {
@@ -16,6 +17,6 @@ public class CategoriaManager {
 	
 	public Categoria buscar(Integer id) {
 	    Optional<Categoria> obj = dao.findById(id);
-	    return obj.orElse(null);
+	    return obj.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado! Id: " + id + ", Tipo: " + Categoria.class.getName()));
 	}
 }
