@@ -3,10 +3,12 @@ package br.com.its.cursomc.manager;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import br.com.its.cursomc.dao.CategoriaDao;
 import br.com.its.cursomc.domain.Categoria;
+import br.com.its.cursomc.manager.exception.DataIntegrityException;
 import br.com.its.cursomc.manager.exception.ObjectNotFoundException;
 
 @Service
@@ -28,5 +30,14 @@ public class CategoriaManager {
 	public Categoria update(Categoria element) {
 		find(element.getId());
 		return dao.save(element);
+	}
+	
+	public void delete(Integer id) {
+		find(id);
+		try {
+			dao.deleteById(id);
+		} catch (DataIntegrityViolationException e) {
+			throw new DataIntegrityException("Não é possivel excluir uma categoria com produtos");
+		}
 	}
 }
