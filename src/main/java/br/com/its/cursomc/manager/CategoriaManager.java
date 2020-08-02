@@ -19,4 +19,9 @@ public class CategoriaManager {
 	    Optional<Categoria> obj = dao.findById(id);
 	    return obj.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado! Id: " + id + ", Tipo: " + Categoria.class.getName()));
 	}
+	
+	public Categoria insert(Categoria element) {
+		element.setId(null);
+		return dao.save(element);
+	}
 }
