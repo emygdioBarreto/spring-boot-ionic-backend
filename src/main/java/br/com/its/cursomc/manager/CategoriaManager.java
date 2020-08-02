@@ -1,5 +1,6 @@
 package br.com.its.cursomc.manager;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,5 +40,9 @@ public class CategoriaManager {
 		} catch (DataIntegrityViolationException e) {
 			throw new DataIntegrityException("Não é possivel excluir uma categoria com produtos");
 		}
+	}
+	
+	public List<Categoria> findAll() {
+		return dao.findAll();
 	}
 }
