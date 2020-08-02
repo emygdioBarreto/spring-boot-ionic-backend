@@ -18,8 +18,8 @@ public class PedidoResource {
 	private PedidoManager manager;
 	
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	public ResponseEntity<?> buscar(@PathVariable Integer id) {
-		Pedido pedido = manager.buscar(id);
+	public ResponseEntity<Pedido> find(@PathVariable Integer id) {
+		Pedido pedido = manager.find(id);
 		return ResponseEntity.ok().body(pedido);
 	}
 

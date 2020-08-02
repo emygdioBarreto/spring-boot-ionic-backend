@@ -15,13 +15,18 @@ public class CategoriaManager {
 	@Autowired
 	private CategoriaDao dao;
 	
-	public Categoria buscar(Integer id) {
+	public Categoria find(Integer id) {
 	    Optional<Categoria> obj = dao.findById(id);
 	    return obj.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado! Id: " + id + ", Tipo: " + Categoria.class.getName()));
 	}
 	
 	public Categoria insert(Categoria element) {
 		element.setId(null);
+		return dao.save(element);
+	}
+
+	public Categoria update(Categoria element) {
+		find(element.getId());
 		return dao.save(element);
 	}
 }

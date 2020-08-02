@@ -15,7 +15,7 @@ public class ClienteManager {
 	@Autowired
 	private ClienteDao dao;
 	
-	public Cliente buscar(Integer id) {
+	public Cliente find(Integer id) {
 	    Optional<Cliente> obj = dao.findById(id);
 	    return obj.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado! Id: " + id + ", Tipo: " + Cliente.class.getName()));
 	}
