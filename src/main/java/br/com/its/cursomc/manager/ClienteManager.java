@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import br.com.its.cursomc.dao.ClienteDao;
 import br.com.its.cursomc.domain.Cliente;
+import br.com.its.cursomc.dto.ClienteDTO;
 import br.com.its.cursomc.manager.exception.DataIntegrityException;
 import br.com.its.cursomc.manager.exception.ObjectNotFoundException;
 
@@ -32,8 +33,14 @@ public class ClienteManager {
 	}
 
 	public Cliente update(Cliente element) {
-		find(element.getId());
-		return dao.save(element);
+		Cliente novoCliente = find(element.getId());
+		updateData(novoCliente, element);
+		return dao.save(novoCliente);
+	}
+	
+	private void updateData(Cliente novoCliente, Cliente element) {
+		novoCliente.setNome(element.getNome());
+		novoCliente.setEmail(element.getEmail());
 	}
 	
 	public void delete(Integer id) {
@@ -54,7 +61,7 @@ public class ClienteManager {
 		return dao.findAll(pageRequest);
 	}
 	
-//	public Cliente fromDTO(ClienteDTO objDto) {
-//		return new Cliente(objDto.getId(),objDto.getNome(),objDto.getEmail(),objDto.getCpfOuCnpj());
-//	}
+	public Cliente fromDTO(ClienteDTO objDto) {
+		return new Cliente(objDto.getId(),objDto.getNome(),objDto.getEmail(),null,null);
+	}
 }
