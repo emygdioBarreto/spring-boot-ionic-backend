@@ -33,8 +33,13 @@ public class CategoriaManager {
 	}
 
 	public Categoria update(Categoria element) {
-		find(element.getId());
+		Categoria novaCategoria = find(element.getId());
+		updateData(novaCategoria, element);
 		return dao.save(element);
+	}
+	
+	private void updateData(Categoria novaCategoria, Categoria element) {
+		novaCategoria.setNome(element.getNome());
 	}
 	
 	public void delete(Integer id) {
