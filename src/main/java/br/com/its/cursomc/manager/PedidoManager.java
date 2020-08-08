@@ -1,7 +1,10 @@
 package br.com.its.cursomc.manager;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -10,8 +13,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
+import br.com.its.cursomc.dao.ItemPedidoDao;
+import br.com.its.cursomc.dao.PagamentoDao;
 import br.com.its.cursomc.dao.PedidoDao;
+import br.com.its.cursomc.dao.ProdutoDao;
+import br.com.its.cursomc.domain.ItemPedido;
+import br.com.its.cursomc.domain.PagamentoComBoleto;
 import br.com.its.cursomc.domain.Pedido;
+import br.com.its.cursomc.domain.enums.EstadoPagamento;
 import br.com.its.cursomc.dto.PedidoDTO;
 import br.com.its.cursomc.manager.exception.DataIntegrityException;
 import br.com.its.cursomc.manager.exception.ObjectNotFoundException;
@@ -22,14 +31,42 @@ public class PedidoManager {
 	@Autowired
 	private PedidoDao dao;
 	
+	@Autowired
+	private BoletoManager boletoManager;
+	
+	@Autowired
+	private ItemPedidoDao itemPedidoDao;
+	
+	@Autowired
+	private PagamentoDao pagamentoDao;
+	
+	@Autowired
+	private ProdutoDao produtoDao;
+	
 	public Pedido find(Integer id) {
 	    Optional<Pedido> obj = dao.findById(id);
 	    return obj.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado! Id: " + id + ", Tipo: " + Pedido.class.getName()));
 	}
 
+	@Transactional
 	public Pedido insert(Pedido element) {
 		element.setId(null);
-		return dao.save(element);
+		element.setInstante(new Date());
+		element.getPagamento().setSituacao(EstadoPagamento.PENDENTE);
+		element.getPagamento().setPedido(element);
+		if (element.getPagamento() instanceof PagamentoComBoleto) {
+			PagamentoComBoleto pagto = (PagamentoComBoleto) element.getPagamento();
+			boletoManager.preencherPagamentoComBoleto(pagto, element.getInstante());
+		}
+		element = dao.save(element);
+		pagamentoDao.save(element.getPagamento());
+		for (ItemPedido ip : element.getItens()) {
+			ip.setDesconto(0.0);
+			ip.setPreco(produtoDao.findById(ip.getProduto().getId()).getPreco());
+			ip.setPedido(element);
+		}
+		itemPedidoDao.saveAll(element.getItens());
+		return element;
 	}
 
 	public Pedido update(Pedido element) {

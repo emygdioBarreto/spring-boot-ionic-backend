@@ -35,8 +35,7 @@ public class PedidoResource {
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<Void> insert(@Valid @RequestBody PedidoDTO objDto) {
-		Pedido obj = manager.fromDTO(objDto);
+	public ResponseEntity<Void> insert(@Valid @RequestBody Pedido obj) {
 		obj = manager.insert(obj);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
 		return ResponseEntity.created(uri).build();
