@@ -13,10 +13,7 @@ import org.springframework.web.servlet.HandlerMapping;
 
 import br.com.its.cursomc.dao.ClienteDao;
 import br.com.its.cursomc.domain.Cliente;
-import br.com.its.cursomc.domain.enums.TipoCliente;
 import br.com.its.cursomc.dto.ClienteDTO;
-import br.com.its.cursomc.dto.NovoClienteDto;
-import br.com.its.cursomc.manager.validation.utils.BR;
 import br.com.its.cursomc.resources.exception.FieldMessage;
 
 public class ClienteUpdateValidator implements ConstraintValidator<ClienteUpdate, ClienteDTO> {
