@@ -60,7 +60,7 @@ public class ClienteManager {
 		try {
 			dao.deleteById(id);
 		} catch (DataIntegrityViolationException e) {
-			throw new DataIntegrityException("Não é possivel excluir um cliente com pedidos");
+			throw new DataIntegrityException("Não é possivel excluir um cliente com pedidos relacionados");
 		}
 	}
 	
