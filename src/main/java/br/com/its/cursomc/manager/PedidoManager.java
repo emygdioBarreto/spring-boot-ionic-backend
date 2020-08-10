@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import br.com.its.cursomc.dao.ItemPedidoDao;
 import br.com.its.cursomc.dao.PagamentoDao;
 import br.com.its.cursomc.dao.PedidoDao;
-import br.com.its.cursomc.dao.ProdutoDao;
 import br.com.its.cursomc.domain.ItemPedido;
 import br.com.its.cursomc.domain.PagamentoComBoleto;
 import br.com.its.cursomc.domain.Pedido;
@@ -41,7 +40,7 @@ public class PedidoManager {
 	private PagamentoDao pagamentoDao;
 	
 	@Autowired
-	private ProdutoDao produtoDao;
+	private ProdutoManager produtoManager;
 	
 	public Pedido find(Integer id) {
 	    Optional<Pedido> obj = dao.findById(id);
@@ -62,10 +61,10 @@ public class PedidoManager {
 		pagamentoDao.save(element.getPagamento());
 		for (ItemPedido ip : element.getItens()) {
 			ip.setDesconto(0.0);
-			ip.setPreco(produtoDao.findById(ip.getProduto().getId()).getPreco());
+			ip.setPreco(produtoManager.find(ip.getProduto().getId()).getPreco());
 			ip.setPedido(element);
+			itemPedidoDao.save(ip);
 		}
-		itemPedidoDao.saveAll(element.getItens());
 		return element;
 	}
 
