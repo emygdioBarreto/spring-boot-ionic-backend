@@ -34,6 +34,9 @@ public class PedidoManager {
 	private ClienteManager clienteManager;
 	
 	@Autowired
+	private EmailManager emailManager;
+	
+	@Autowired
 	private ItemPedidoDao itemPedidoDao;
 	
 	@Autowired
@@ -70,7 +73,7 @@ public class PedidoManager {
 			ip.setPedido(element);
 		}
 		itemPedidoDao.saveAll(element.getItens());
-		System.out.println(element);
+		emailManager.sendOrderConfirmationEmail(element);
 		return element;
 	}
 
