@@ -1,13 +1,17 @@
 package br.com.its.cursomc.domain;
 
 import java.io.Serializable;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
+@Table(name = "ITEM_PEDIDO")
 public class ItemPedido implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -31,7 +35,7 @@ public class ItemPedido implements Serializable {
 	}
 
 	public double getSubTotal() {
-		return (preco - desconto) * quantidade;
+		return (this.preco - this.desconto) * this.quantidade;
 	}
 	
 	public ItemPedidoPK getId() {
@@ -96,6 +100,20 @@ public class ItemPedido implements Serializable {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+		StringBuilder builder = new StringBuilder();
+		builder.append(getProduto().getNome());
+		builder.append(", Qtde: ");
+		builder.append(getQuantidade());
+		builder.append(", Preço Unitário: ");
+		builder.append(nf.format(getPreco()));
+		builder.append(", Subtotal: ");
+		builder.append(nf.format(getSubTotal()));
+		builder.append("\n");
+		return builder.toString();
 	}	
-	
 }

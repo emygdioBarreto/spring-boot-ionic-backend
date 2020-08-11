@@ -28,16 +28,19 @@ import br.com.its.cursomc.manager.exception.ObjectNotFoundException;
 public class PedidoManager {
 
 	@Autowired
-	private PedidoDao dao;
+	private BoletoManager boletoManager;
 	
 	@Autowired
-	private BoletoManager boletoManager;
+	private ClienteManager clienteManager;
 	
 	@Autowired
 	private ItemPedidoDao itemPedidoDao;
 	
 	@Autowired
 	private PagamentoDao pagamentoDao;
+	
+	@Autowired
+	private PedidoDao dao;
 	
 	@Autowired
 	private ProdutoManager produtoManager;
@@ -51,6 +54,7 @@ public class PedidoManager {
 	public Pedido insert(Pedido element) {
 		element.setId(null);
 		element.setInstante(new Date());
+		element.setCliente(clienteManager.find(element.getCliente().getId()));
 		element.getPagamento().setSituacao(EstadoPagamento.PENDENTE);
 		element.getPagamento().setPedido(element);
 		if (element.getPagamento() instanceof PagamentoComBoleto) {
@@ -61,10 +65,12 @@ public class PedidoManager {
 		pagamentoDao.save(element.getPagamento());
 		for (ItemPedido ip : element.getItens()) {
 			ip.setDesconto(0.0);
-			ip.setPreco(produtoManager.find(ip.getProduto().getId()).getPreco());
+			ip.setProduto(produtoManager.find(ip.getProduto().getId()));
+			ip.setPreco(ip.getProduto().getPreco());
 			ip.setPedido(element);
-			itemPedidoDao.save(ip);
 		}
+		itemPedidoDao.saveAll(element.getItens());
+		System.out.println(element);
 		return element;
 	}
 

@@ -42,6 +42,7 @@ public class Produto implements Serializable {
 		super();
 		this.id = id;
 		this.nome = nome;
+		this.preco = preco;
 	}
 
 	@JsonIgnore
