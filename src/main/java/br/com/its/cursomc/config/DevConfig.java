@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 import br.com.its.cursomc.manager.DBManager;
+import br.com.its.cursomc.manager.EmailManager;
+import br.com.its.cursomc.manager.SmtpEmailManager;
 
 @Configuration
 @Profile("dev")
@@ -27,5 +29,10 @@ public class DevConfig {
 		}
 		dbManager.instantiateTestDatabase();
 		return true;
+	}
+	
+	@Bean
+	public EmailManager emailManager() {
+		return new SmtpEmailManager();
 	}
 }
