@@ -73,7 +73,7 @@ public class PedidoManager {
 			ip.setPedido(element);
 		}
 		itemPedidoDao.saveAll(element.getItens());
-		emailManager.sendOrderConfirmationEmail(element);
+		emailManager.sendOrderConfirmationHtmlEmail(element);
 		return element;
 	}
 
