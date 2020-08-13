@@ -17,11 +17,14 @@ import br.com.its.cursomc.dao.EnderecoDao;
 import br.com.its.cursomc.domain.Cidade;
 import br.com.its.cursomc.domain.Cliente;
 import br.com.its.cursomc.domain.Endereco;
+import br.com.its.cursomc.domain.enums.Perfil;
 import br.com.its.cursomc.domain.enums.TipoCliente;
 import br.com.its.cursomc.dto.ClienteDTO;
 import br.com.its.cursomc.dto.NovoClienteDto;
+import br.com.its.cursomc.manager.exception.AuthorizationException;
 import br.com.its.cursomc.manager.exception.DataIntegrityException;
 import br.com.its.cursomc.manager.exception.ObjectNotFoundException;
+import br.com.its.cursomc.security.UserSS;
 
 @Service
 public class ClienteManager {
@@ -36,6 +39,10 @@ public class ClienteManager {
 	private EnderecoDao enderecoDao;
 	
 	public Cliente find(Integer id) {
+		UserSS user = UserManager.authenticated();
+		if ((user == null || !user.hasRole(Perfil.ADMIN)) && !id.equals(user.getId())) {
+			throw new AuthorizationException("Acesso negado");
+		}
 	    Optional<Cliente> obj = dao.findById(id);
 	    return obj.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado! Id: " + id + ", Tipo: " + Cliente.class.getName()));
 	}
