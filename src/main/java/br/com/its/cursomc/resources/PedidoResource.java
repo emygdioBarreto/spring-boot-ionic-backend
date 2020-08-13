@@ -60,19 +60,11 @@ public class PedidoResource {
 	}
 	
 	@RequestMapping(method = RequestMethod.GET)
-	public ResponseEntity<List<PedidoDTO>> findAll() {
-		List<Pedido> listaPedido = manager.findAll();
-		List<PedidoDTO> listaPedidoDTO = listaPedido.stream().map(obj -> new PedidoDTO(obj)).collect(Collectors.toList());
-		return ResponseEntity.ok().body(listaPedidoDTO);
-	}
-	
-	@RequestMapping(value = "/page", method = RequestMethod.GET)
-	public ResponseEntity<Page<PedidoDTO>> findPage(@RequestParam(value = "page", defaultValue = "0") Integer page, 
-													@RequestParam(value = "linesPerPage", defaultValue = "24") Integer linesPerPage, 
-													@RequestParam(value = "orderBy", defaultValue = "nome") String orderBy, 
-													@RequestParam(value = "direction", defaultValue = "ASC") String direction) {
+	public ResponseEntity<Page<Pedido>> findPage(@RequestParam(value = "page", defaultValue = "0") Integer page, 
+												 @RequestParam(value = "linesPerPage", defaultValue = "24") Integer linesPerPage, 
+												 @RequestParam(value = "orderBy", defaultValue = "instante") String orderBy, 
+												 @RequestParam(value = "direction", defaultValue = "DESC") String direction) {
 		Page<Pedido> listaPedido = manager.findPage(page, linesPerPage, orderBy, direction);
-		Page<PedidoDTO> listaPedidoDTO = listaPedido.map(obj -> new PedidoDTO(obj));
-		return ResponseEntity.ok().body(listaPedidoDTO);
+		return ResponseEntity.ok().body(listaPedido);
 	}
 }

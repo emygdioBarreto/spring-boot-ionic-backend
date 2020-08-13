@@ -16,13 +16,16 @@ import org.springframework.stereotype.Service;
 import br.com.its.cursomc.dao.ItemPedidoDao;
 import br.com.its.cursomc.dao.PagamentoDao;
 import br.com.its.cursomc.dao.PedidoDao;
+import br.com.its.cursomc.domain.Cliente;
 import br.com.its.cursomc.domain.ItemPedido;
 import br.com.its.cursomc.domain.PagamentoComBoleto;
 import br.com.its.cursomc.domain.Pedido;
 import br.com.its.cursomc.domain.enums.EstadoPagamento;
 import br.com.its.cursomc.dto.PedidoDTO;
+import br.com.its.cursomc.manager.exception.AuthorizationException;
 import br.com.its.cursomc.manager.exception.DataIntegrityException;
 import br.com.its.cursomc.manager.exception.ObjectNotFoundException;
+import br.com.its.cursomc.security.UserSS;
 
 @Service
 public class PedidoManager {
@@ -96,8 +99,13 @@ public class PedidoManager {
 	}
 	
 	public Page<Pedido> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
+		UserSS user = UserManager.authenticated();
+		if (user == null) {
+			throw new AuthorizationException("Acesso negado");
+		}
 		PageRequest pageRequest = PageRequest.of(page,linesPerPage,Direction.valueOf(direction),orderBy);
-		return dao.findAll(pageRequest);
+		Cliente cliente =  clienteManager.find(user.getId());
+		return dao.findByCliente(cliente, pageRequest);
 	}
 	
 	public Pedido fromDTO(PedidoDTO objDto) {
