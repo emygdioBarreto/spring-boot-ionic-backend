@@ -29,6 +29,7 @@ import br.com.its.cursomc.domain.PagamentoComCartao;
 import br.com.its.cursomc.domain.Pedido;
 import br.com.its.cursomc.domain.Produto;
 import br.com.its.cursomc.domain.enums.EstadoPagamento;
+import br.com.its.cursomc.domain.enums.Perfil;
 import br.com.its.cursomc.domain.enums.TipoCliente;
 
 @Service
@@ -111,29 +112,39 @@ public class DBManager {
 		
 		Estado est1 = new Estado(null,"Minas Gerais");
 		Estado est2 = new Estado(null,"São Paulo");
+		Estado est3 = new Estado(null,"Pernambuco");
 		
 		Cidade c1 = new Cidade(null,"Uberlândia",est1);
 		Cidade c2 = new Cidade(null,"São Paulo",est2);
 		Cidade c3 = new Cidade(null,"Campinas",est2);
+		Cidade c4 = new Cidade(null,"Recife",est3);
 		
 		est1.getCidades().addAll(Arrays.asList(c1));
 		est2.getCidades().addAll(Arrays.asList(c2,c3));
+		est3.getCidades().addAll(Arrays.asList(c4));
 
-		estadoDao.saveAll(Arrays.asList(est1,est2));
+		estadoDao.saveAll(Arrays.asList(est1,est2,est3));
 		
-		cidadeDao.saveAll(Arrays.asList(c1,c2,c3));
+		cidadeDao.saveAll(Arrays.asList(c1,c2,c3,c4));
 		
-		Cliente cli1 = new Cliente(null,"Maria Silva","emygdio.barreto@gmail.com","36378912377",TipoCliente.PESSOA_FISICA,pe.encode("123"));
+		Cliente cli1 = new Cliente(null,"Maria Silva","emygdio@proj-ti.com.br","36378912377",TipoCliente.PESSOA_FISICA,pe.encode("123"));
 		cli1.getTelefones().addAll(Arrays.asList("27363323","93838393"));
 		
 		Endereco e1 = new Endereco(null,"Rua Flores","300","Apto 203","Jardim","38220834",cli1,c1);
 		Endereco e2 = new Endereco(null,"Avenida Matos","105","Sala 800","Centro","38777012",cli1,c2);
 		
+		Cliente cli2 = new Cliente(null,"Emygdio Barreto","emygdio.barreto@gmail.com","38732521472",TipoCliente.PESSOA_FISICA,pe.encode("123"));
+		cli2.addPerfil(Perfil.ADMIN);
+		cli2.getTelefones().addAll(Arrays.asList("991725082"));
+		
+		Endereco e3 = new Endereco(null,"Rua Visconde de Goiana","395","Apto 1903 - Orquídea","Derby","50070345",cli2,c4);
+
 		cli1.getEnderecos().addAll(Arrays.asList(e1,e2));
+		cli2.getEnderecos().addAll(Arrays.asList(e3));
+
+		clienteDao.saveAll(Arrays.asList(cli1,cli2));
 		
-		clienteDao.saveAll(Arrays.asList(cli1));
-		
-		enderecoDao.saveAll(Arrays.asList(e1,e2));
+		enderecoDao.saveAll(Arrays.asList(e1,e2,e3));
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		
