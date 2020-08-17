@@ -21,5 +21,4 @@ public class CursomcApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		s3Manager.updoadFile("C:\\Temp\\SGNE\\codigos\\sgne\\src\\main\\webapp\\img\\em_construcao.jpg");
 	}
-
 }
