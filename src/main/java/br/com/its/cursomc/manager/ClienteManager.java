@@ -1,5 +1,6 @@
 package br.com.its.cursomc.manager;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import br.com.its.cursomc.dao.ClienteDao;
 import br.com.its.cursomc.dao.EnderecoDao;
@@ -37,6 +39,9 @@ public class ClienteManager {
 	
 	@Autowired
 	private EnderecoDao enderecoDao;
+	
+	@Autowired
+	private S3Manager s3Manager;
 	
 	public Cliente find(Integer id) {
 		UserSS user = UserManager.authenticated();
@@ -101,5 +106,9 @@ public class ClienteManager {
 			cliente.getTelefones().add(objDto.getTelefone3());
 		}
 		return cliente;
+	}
+	
+	public URI uploadProfilePicture(MultipartFile multipartFile) {
+		return s3Manager.updoadFile(multipartFile);
 	}
 }
