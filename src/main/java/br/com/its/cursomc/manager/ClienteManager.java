@@ -36,14 +36,14 @@ public class ClienteManager {
 	@Value("${img.prefix.client.profile}")
 	private String prefixoCliente;
 	
+	@Value("${img.profile.size}")
+	private int tamanhoImagem;
+	
 	@Autowired
 	private BCryptPasswordEncoder pe;
 	
 	@Autowired
 	private ClienteDao dao;
-	
-	@Autowired
-	private ClienteManager manager;
 	
 	@Autowired
 	private EnderecoDao enderecoDao;
@@ -125,9 +125,12 @@ public class ClienteManager {
 			throw new AuthorizationException("Acesso negado");
 		}
 		
-		BufferedImage jgpImage = imageManager.getJpgImageFromFile(multipartFile);
+		BufferedImage jpgImage = imageManager.getJpgImageFromFile(multipartFile);
+		jpgImage = imageManager.cropSquare(jpgImage);
+		jpgImage = imageManager.resize(jpgImage, tamanhoImagem);
+		
 		String fileName = prefixoCliente + user.getId() + ".jpg";
 		
-		return s3Manager.uploadFile(imageManager.getInputStream(jgpImage, "jpg"), fileName, "image");
+		return s3Manager.uploadFile(imageManager.getInputStream(jpgImage, "jpg"), fileName, "image");
 	}
 }
