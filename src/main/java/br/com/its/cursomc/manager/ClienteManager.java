@@ -38,6 +38,9 @@ public class ClienteManager {
 	private ClienteDao dao;
 	
 	@Autowired
+	private ClienteManager manager;
+	
+	@Autowired
 	private EnderecoDao enderecoDao;
 	
 	@Autowired
@@ -109,6 +112,14 @@ public class ClienteManager {
 	}
 	
 	public URI uploadProfilePicture(MultipartFile multipartFile) {
-		return s3Manager.updoadFile(multipartFile);
+		UserSS user = UserManager.authenticated();
+		if (user == null) {
+			throw new AuthorizationException("Acesso negado");
+		}
+		URI uri = s3Manager.updoadFile(multipartFile);
+		Cliente cli = manager.find(user.getId());
+		cli.setImageUrl(uri.toString());
+		dao.save(cli);
+		return uri;
 	}
 }
