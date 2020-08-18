@@ -1,10 +1,12 @@
 package br.com.its.cursomc.manager;
 
+import java.awt.image.BufferedImage;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,6 +33,9 @@ import br.com.its.cursomc.security.UserSS;
 @Service
 public class ClienteManager {
 
+	@Value("${img.prefix.client.profile}")
+	private String prefixoCliente;
+	
 	@Autowired
 	private BCryptPasswordEncoder pe;
 	
@@ -42,6 +47,9 @@ public class ClienteManager {
 	
 	@Autowired
 	private EnderecoDao enderecoDao;
+	
+	@Autowired
+	private ImageManager imageManager;
 	
 	@Autowired
 	private S3Manager s3Manager;
@@ -116,10 +124,10 @@ public class ClienteManager {
 		if (user == null) {
 			throw new AuthorizationException("Acesso negado");
 		}
-		URI uri = s3Manager.updoadFile(multipartFile);
-		Cliente cli = manager.find(user.getId());
-		cli.setImageUrl(uri.toString());
-		dao.save(cli);
-		return uri;
+		
+		BufferedImage jgpImage = imageManager.getJpgImageFromFile(multipartFile);
+		String fileName = prefixoCliente + user.getId() + ".jpg";
+		
+		return s3Manager.uploadFile(imageManager.getInputStream(jgpImage, "jpg"), fileName, "image");
 	}
 }
