@@ -33,7 +33,7 @@ import br.com.its.cursomc.security.UserSS;
 @Service
 public class ClienteManager {
 
-	@Value("${img.prefix.client.profile}")
+	@Value("${img.prefix.cliente.profile}")
 	private String prefixoCliente;
 	
 	@Value("${img.profile.size}")
@@ -124,13 +124,13 @@ public class ClienteManager {
 		if (user == null) {
 			throw new AuthorizationException("Acesso negado");
 		}
-		
+		// carregando a imagem e ajustando o tipo e o tamanho
 		BufferedImage jpgImage = imageManager.getJpgImageFromFile(multipartFile);
 		jpgImage = imageManager.cropSquare(jpgImage);
 		jpgImage = imageManager.resize(jpgImage, tamanhoImagem);
-		
+		// montando o nome do arquivo
 		String fileName = prefixoCliente + user.getId() + ".jpg";
-		
+		// fazendo o upload do arquivo para o bucket do S3 da amazon
 		return s3Manager.uploadFile(imageManager.getInputStream(jpgImage, "jpg"), fileName, "image");
 	}
 }

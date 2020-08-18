@@ -1,5 +1,6 @@
 package br.com.its.cursomc.resources;
 
+import java.net.URI;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import br.com.its.cursomc.domain.Produto;
 import br.com.its.cursomc.dto.ProdutoDTO;
@@ -41,5 +43,11 @@ public class ProdutoResource {
 		Page<Produto> listaProduto = manager.search(nomeDecoded, ids, page, linesPerPage, orderBy, direction);
 		Page<ProdutoDTO> listaProdutoDTO = listaProduto.map(obj -> new ProdutoDTO(obj));
 		return ResponseEntity.ok().body(listaProdutoDTO);
+	}
+
+	@RequestMapping(value = "/picture", method = RequestMethod.POST)
+	public ResponseEntity<Void> uploadProfilePicture(@PathVariable Integer id, @RequestParam(name = "file") MultipartFile file) {
+		URI uri =  manager.uploadProfilePicture(id, file);
+		return ResponseEntity.created(uri).build();
 	}
 }
