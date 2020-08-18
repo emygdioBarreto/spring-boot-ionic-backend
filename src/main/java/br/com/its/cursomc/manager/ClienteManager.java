@@ -95,6 +95,19 @@ public class ClienteManager {
 		return dao.findAll();
 	}
 	
+	public Cliente findByEmail(String email) {
+		// verifica se o usuário está logado
+		UserSS user = UserManager.authenticated();
+		if ((user == null || !user.hasRole(Perfil.ADMIN)) && !email.equals(user.getUsername())) {
+			throw new AuthorizationException("Acesso negado");
+		}
+		Cliente cli = this.find(user.getId());
+		if (cli == null) {
+			throw new ObjectNotFoundException("Objeto não encontrado! Id: " + user.getId() + ", Tipo: " + Cliente.class.getName());
+		}
+		return cli;
+	}
+	
 	public Page<Cliente> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
 		PageRequest pageRequest = PageRequest.of(page,linesPerPage,Direction.valueOf(direction),orderBy);
 		return dao.findAll(pageRequest);
