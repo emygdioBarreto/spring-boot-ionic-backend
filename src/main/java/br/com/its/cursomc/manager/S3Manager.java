@@ -15,6 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 
+import br.com.its.cursomc.manager.exception.FileException;
+
 @Service
 public class S3Manager {
 
@@ -33,7 +35,7 @@ public class S3Manager {
 			String contentType = multipartFile.getContentType();
 			return uploadFile(is,fileName,contentType);
 		} catch (IOException e) {
-			throw new RuntimeException("Erro de IO: "+e.getMessage());
+			throw new FileException("Erro de IO: "+e.getMessage());
 		}
 	}
 
