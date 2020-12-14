@@ -10,6 +10,7 @@ import br.com.its.cursomc.manager.CidadeManager;
 @RequestMapping(value = "/cidades")
 public class CidadeResource {
 
+	@SuppressWarnings("unused")
 	@Autowired
 	private CidadeManager manager;
 }
